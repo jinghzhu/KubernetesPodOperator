@@ -57,7 +57,6 @@ func New(masterURL, kubeconfigPath, namespace string) (*Operator, error) {
 		context:    ctx,
 	}
 	// fieldSelector := labels.Set{"keys": string(nodeName)}.AsSelector()
-	// ListOption is used to get all the marked pod as created by Gulel
 	ListOption := metav1.ListOptions{}
 	op.indexer, op.watcher = cache.NewIndexerInformer(
 		// cache.NewListWatchFromClient(client.CoreV1().RESTClient(), "pods", namespace, fieldSelector),
