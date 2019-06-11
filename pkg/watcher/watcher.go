@@ -27,6 +27,7 @@ func PendingPodsWatcher(namespace string, watchInterval time.Duration) {
 			namespace,
 			&metav1.ListOptions{
 				FieldSelector: string(types.StatusPhasePending),
+				// LabelSelector: "something=",
 			},
 			checkPendingPod,
 		)

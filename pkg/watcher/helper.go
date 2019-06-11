@@ -1,12 +1,14 @@
 package watcher
 
 import (
-	"errors"
 	"fmt"
+	"time"
+	"os"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
+	clientpod "github.com/jinghzhu/kclient/pod"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -16,7 +18,7 @@ import (
 func CheckPods(kubeconfigPath, namespace string, opts *metav1.ListOptions, f func(*corev1.Pod) error) error {
 	// Validate opts.
 	if opts == nil {
-		return errors.New("*metav1.ListOptions is nil in CheckPods")
+		return fmt.Errorf("*metav1.ListOptions is nil in CheckPods")
 	}
 	// Build client.
 	clientConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
@@ -51,5 +53,30 @@ func CheckPods(kubeconfigPath, namespace string, opts *metav1.ListOptions, f fun
 func processBadPendingPod(pod *corev1.Pod) error {
 	fmt.Println("Process bad Pending Pod " + pod.GetName())
 
-	return nil
+	err := clientpod.DeletePodWithCheck(
+		pod.GetName(),
+		pod.GetNamespace(),
+		os.Getenv("KUBECONFIG"),
+		&metav1.DeleteOptions{
+			GracePeriodSeconds: &deleteGracePeriod,
+		},
+	)
+	if err != nil {
+		fmt.Println("Fail to delete bad Pending Pod " + pod.GetName())
+
+		// Try again later.
+		go func() {
+			time.Sleep(5 * time.Minute)
+			clientpod.DeletePodWithCheck(
+				pod.GetName(),
+				pod.GetNamespace(),
+				os.Getenv("KUBECONFIG"),
+				&metav1.DeleteOptions{
+					GracePeriodSeconds: &types.DeleteGracePeriod,
+				},
+			)
+		}()
+	}
+
+	return err
 }
