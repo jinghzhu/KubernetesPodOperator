@@ -2,8 +2,8 @@ package watcher
 
 import (
 	"fmt"
-	"time"
 	"os"
+	"time"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -72,7 +72,7 @@ func processBadPendingPod(pod *corev1.Pod) error {
 				pod.GetNamespace(),
 				os.Getenv("KUBECONFIG"),
 				&metav1.DeleteOptions{
-					GracePeriodSeconds: &types.DeleteGracePeriod,
+					GracePeriodSeconds: &deleteGracePeriod,
 				},
 			)
 		}()
