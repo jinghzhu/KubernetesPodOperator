@@ -22,6 +22,10 @@
 ignored = ["k8s.io/client-go/pkg/api/v1"]
 
 [[constraint]]
+  name = "github.com/jinghzhu/kclient"
+  branch = "k8s-1.9.6"
+
+[[constraint]]
   name = "github.com/google/uuid"
   version = "0.2"
 
