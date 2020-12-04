@@ -8,7 +8,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
-	clientpod "github.com/jinghzhu/kclient/pod"
+	utilspod "github.com/jinghzhu/kutils/pod"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -53,7 +53,7 @@ func CheckPods(kubeconfigPath, namespace string, opts *metav1.ListOptions, f fun
 func processBadPendingPod(pod *corev1.Pod) error {
 	fmt.Println("Process bad Pending Pod " + pod.GetName())
 
-	err := clientpod.DeletePodWithCheck(
+	err := utilspod.DeletePodWithCheck(
 		pod.GetName(),
 		pod.GetNamespace(),
 		os.Getenv("KUBECONFIG"),
@@ -67,7 +67,7 @@ func processBadPendingPod(pod *corev1.Pod) error {
 		// Try again later.
 		go func() {
 			time.Sleep(5 * time.Minute)
-			clientpod.DeletePodWithCheck(
+			utilspod.DeletePodWithCheck(
 				pod.GetName(),
 				pod.GetNamespace(),
 				os.Getenv("KUBECONFIG"),
