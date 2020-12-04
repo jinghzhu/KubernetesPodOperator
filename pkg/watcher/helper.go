@@ -1,6 +1,7 @@
 package watcher
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -15,11 +16,12 @@ import (
 
 // CheckPods will firstly get a list of Pods by given list options. Then it will perform the action defined
 // by the function parameter to deal with each Pod.
-func CheckPods(kubeconfigPath, namespace string, opts *metav1.ListOptions, f func(*corev1.Pod) error) error {
-	// Validate opts.
-	if opts == nil {
-		return fmt.Errorf("*metav1.ListOptions is nil in CheckPods")
-	}
+func CheckPods(
+	ctx context.Context,
+	kubeconfigPath,
+	namespace string,
+	opts metav1.ListOptions,
+	f func(context.Context, *corev1.Pod) error) error {
 	// Build client.
 	clientConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
 	if err != nil {
@@ -33,7 +35,7 @@ func CheckPods(kubeconfigPath, namespace string, opts *metav1.ListOptions, f fun
 
 		return err
 	}
-	pods, err := clientSet.CoreV1().Pods(namespace).List(*opts)
+	pods, err := clientSet.CoreV1().Pods(namespace).List(ctx, opts)
 	if err != nil {
 		fmt.Printf("Fail to list Pods: %+v\n", err)
 
@@ -43,21 +45,22 @@ func CheckPods(kubeconfigPath, namespace string, opts *metav1.ListOptions, f fun
 
 	for k, v := range pods.Items {
 		fmt.Printf("Ready to check Pod %s\n", v.GetName())
-		go f(&pods.Items[k])
+		go f(ctx, &pods.Items[k])
 	}
 
 	return nil
 }
 
 // processBadPendingPod deals with bad Pending Pods.
-func processBadPendingPod(pod *corev1.Pod) error {
+func processBadPendingPod(ctx context.Context, pod *corev1.Pod) error {
 	fmt.Println("Process bad Pending Pod " + pod.GetName())
 
 	err := utilspod.DeletePodWithCheck(
+		ctx,
 		pod.GetName(),
 		pod.GetNamespace(),
 		os.Getenv("KUBECONFIG"),
-		&metav1.DeleteOptions{
+		metav1.DeleteOptions{
 			GracePeriodSeconds: &deleteGracePeriod,
 		},
 	)
@@ -68,10 +71,11 @@ func processBadPendingPod(pod *corev1.Pod) error {
 		go func() {
 			time.Sleep(5 * time.Minute)
 			utilspod.DeletePodWithCheck(
+				ctx,
 				pod.GetName(),
 				pod.GetNamespace(),
 				os.Getenv("KUBECONFIG"),
-				&metav1.DeleteOptions{
+				metav1.DeleteOptions{
 					GracePeriodSeconds: &deleteGracePeriod,
 				},
 			)

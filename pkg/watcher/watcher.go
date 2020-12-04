@@ -1,6 +1,7 @@
 package watcher
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -13,19 +14,20 @@ import (
 )
 
 // PendingPodsWatcher watches the Pods in Pending phase and perform some actions.
-func PendingPodsWatcher(namespace string, watchInterval time.Duration) {
+func PendingPodsWatcher(ctx context.Context, namespace string, watchInterval time.Duration) {
 	defer func() { // Always keep it running.
 		if err := recover(); err != nil {
 			fmt.Printf("Catch panic in PendingPodsWatcher: %+v\n", err)
 		}
-		go PendingPodsWatcher(namespace, watchInterval)
+		go PendingPodsWatcher(ctx, namespace, watchInterval)
 	}()
 	for {
 		fmt.Println("Start to check Pending Pods")
 		err := CheckPods(
+			ctx,
 			os.Getenv("KUBECONFIG"),
 			namespace,
-			&metav1.ListOptions{
+			metav1.ListOptions{
 				FieldSelector: string(types.StatusPhasePending),
 				// LabelSelector: "something=",
 			},
@@ -41,12 +43,12 @@ func PendingPodsWatcher(namespace string, watchInterval time.Duration) {
 }
 
 // checkPendingPod checks the Pending Pod.
-func checkPendingPod(pod *corev1.Pod) error {
+func checkPendingPod(ctx context.Context, pod *corev1.Pod) error {
 	defer utils.PanicHandler()
 	sub := time.Now().Sub(pod.ObjectMeta.CreationTimestamp.Time)
 	if sub.Seconds() < types.MaxPendingPeriod {
 		return nil
 	}
 
-	return processBadPendingPod(pod)
+	return processBadPendingPod(ctx, pod)
 }

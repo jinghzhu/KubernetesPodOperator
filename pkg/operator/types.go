@@ -63,11 +63,11 @@ func New(masterURL, kubeconfigPath, namespace string) (*Operator, error) {
 		&cache.ListWatch{
 			ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 				options = ListOption
-				return op.kubeClient.CoreV1().Pods(namespace).List(options)
+				return op.kubeClient.CoreV1().Pods(namespace).List(ctx, options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				options = ListOption
-				return op.kubeClient.CoreV1().Pods(namespace).Watch(options)
+				return op.kubeClient.CoreV1().Pods(namespace).Watch(ctx, options)
 			},
 		},
 		&corev1.Pod{},

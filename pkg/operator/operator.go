@@ -27,6 +27,7 @@ func (op *Operator) watch(stopCh <-chan bool) {
 	go op.watcher.Run(ctx.Done())
 	// For Pods in Pending status.
 	go watcher.PendingPodsWatcher(
+		ctx,
 		os.Getenv("NAMESPACE"),
 		types.PendingWatchInterval,
 	)
