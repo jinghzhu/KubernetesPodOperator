@@ -14,5 +14,5 @@ func (op *Operator) onDelete(obj interface{}) {
 		return
 	}
 	copiedPod := pod.DeepCopy()
-	fmt.Printf("Find a Pod delete event: %s\n", copiedPod.String())
+	fmt.Printf("Find a Pod delete event.\n\tName: %s\n\tResource Version: %s\n", copiedPod.GetName(), copiedPod.GetResourceVersion())
 }

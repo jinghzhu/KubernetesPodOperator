@@ -22,7 +22,8 @@ func (op *Operator) onUpdate(oldObj, newObj interface{}) {
 		return
 	}
 	fmt.Printf(
-		"Find a Pod update event from %s to %s\n",
+		"Find a Pod update event.\n\tPod Name: %s\n\tOld Status: %s\n\tNew Status: %s\n",
+		oldPod.GetName(),
 		oldPod.Status.String(),
 		newPod.Status.String(),
 	)
