@@ -14,5 +14,5 @@ func (op *Operator) onAdd(obj interface{}) {
 		return
 	}
 	copiedPod := pod.DeepCopy()
-	fmt.Printf("Find a Pod add event.\n\tName: %s\n\tResource Version: %s\n", copiedPod.GetName(), copiedPod.GetResourceVersion())
+	fmt.Printf("\nFind a Pod add event.\n\tName: %s\n\tResource Version: %s\n", copiedPod.GetName(), copiedPod.GetResourceVersion())
 }
