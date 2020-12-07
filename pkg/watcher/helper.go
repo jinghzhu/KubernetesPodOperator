@@ -3,9 +3,9 @@ package watcher
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/jinghzhu/KubernetesPodOperator/pkg/config"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
@@ -55,11 +55,12 @@ func CheckPods(
 func processBadPendingPod(ctx context.Context, pod *corev1.Pod) error {
 	fmt.Println("Process bad Pending Pod " + pod.GetName())
 
+	cfg := config.GetConfig()
 	err := utilspod.DeletePodWithCheck(
 		ctx,
 		pod.GetName(),
 		pod.GetNamespace(),
-		os.Getenv("KUBECONFIG"),
+		cfg.GetKubeconfigPath(),
 		metav1.DeleteOptions{
 			GracePeriodSeconds: &deleteGracePeriod,
 		},
@@ -74,7 +75,7 @@ func processBadPendingPod(ctx context.Context, pod *corev1.Pod) error {
 				ctx,
 				pod.GetName(),
 				pod.GetNamespace(),
-				os.Getenv("KUBECONFIG"),
+				cfg.GetKubeconfigPath(),
 				metav1.DeleteOptions{
 					GracePeriodSeconds: &deleteGracePeriod,
 				},
