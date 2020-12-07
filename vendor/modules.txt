@@ -31,7 +31,7 @@ github.com/hashicorp/golang-lru
 github.com/hashicorp/golang-lru/simplelru
 # github.com/imdario/mergo v0.3.11
 github.com/imdario/mergo
-# github.com/jinghzhu/KubernetesCRD v0.0.0-20201207050604-661a452a0420
+# github.com/jinghzhu/KubernetesCRD v0.0.0-20201207220119-9803c5ba19c4
 ## explicit
 github.com/jinghzhu/KubernetesCRD/pkg/config
 github.com/jinghzhu/KubernetesCRD/pkg/crd/jinghzhu
