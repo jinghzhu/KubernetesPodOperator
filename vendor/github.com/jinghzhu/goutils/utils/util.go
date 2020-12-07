@@ -12,68 +12,17 @@ import (
 
 // IntMax returns the max value of int32, which is 2147483647.
 func IntMax() int {
-    i := 0
-    for j := 0; j < 31; j++ {
-        i = (i << 1) | 1
-    }
-    
-    return i
+	i := 0
+	for j := 0; j < 31; j++ {
+		i = (i << 1) | 1
+	}
+
+	return i
 }
 
 // IntMin returns the min value of int32, which is -2147483648.
 func IntMin() int {
-    return -1 * (1 << 31)
-}
-
-// IsIPv6 checks whether the input is a valid IPv6 address.
-func IsIPv6(ip string) bool {
-    ips := strings.Split(ip, ":")
-    l := len(ips)
-    if l != 8 {
-        return false
-    }
-    validStr := "0123456789ABCDEFabcdef"
-    for _, v := range ips {
-        if len(v) < 1 || len(v) > 4 {
-            return false
-        }
-        for _, x := range v {
-            if !strings.Contains(validStr, string(x)) {
-                return false
-            }
-        }
-    }
-    
-    return true
-}
-
-// IsIPv4 checks whether the stirng is a valid IPv4 address.
-func IsIPv4(ip string) bool {
-	ips := strings.Split(ip, ".")
-	l := len(ips)
-	if l != 4 {
-		return false
-	}
-	for _, v := range ips {
-		lv, tmp := len(v), 0
-		if lv > 3 || lv < 1 {
-			return false
-		}
-		if v[0] == '0' && lv > 1 {
-			return false
-		}
-		for _, x := range v {
-			if x < '0' || x > '9' {
-				return false
-			}
-			tmp = 10*tmp + int(x-'0')
-		}
-		if tmp > 255 {
-			return false
-		}
-	}
-
-	return true
+	return -1 * (1 << 31)
 }
 
 // Struct2String accepts any interface{} and return to JSON based string.
