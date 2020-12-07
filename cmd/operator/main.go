@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Start Pod Operator")
+	fmt.Println("Init Pod Operator...")
 	cfg := config.GetConfig()
 	op, err := operator.New("", cfg.GetKubeconfigPath(), cfg.GetPodNamespace())
 	if err != nil {
