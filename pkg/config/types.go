@@ -6,9 +6,9 @@ var (
 
 const (
 	// DefaultPodNamespace is the default namespace where the Pod Operator is watching.
-	DefaultPodNamespace string = "crd"
+	DefaultPodNamespace string = "worker"
 	// DefaultKubeconfigPath is the default local path of kubeconfig file.
-	DefaultKubeconfigPath string = "/.kube/config"
+	DefaultKubeconfigPath string = "/home/jinghzhu/.kube/config"
 )
 
 type Config struct {
