@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/jinghzhu/KubernetesPodOperator/pkg/config"
 	"github.com/jinghzhu/KubernetesPodOperator/pkg/operator"
 	"github.com/jinghzhu/KubernetesPodOperator/pkg/types"
 )
 
 func main() {
-	fmt.Println("Start Pod Operator")
-	op, err := operator.New("", os.Getenv("KUBECONFIG"), os.Getenv("NAMESPACE"))
+	fmt.Println("Init Pod Operator...")
+	cfg := config.GetConfig()
+	op, err := operator.New("", cfg.GetKubeconfigPath(), cfg.GetPodNamespace())
 	if err != nil {
 		panic(err)
 	}

@@ -25,8 +25,12 @@ func (op *Operator) Stop() {
 func (op *Operator) watch(stopCh <-chan bool) {
 	ctx := op.GetContext()
 	go op.watcher.Run(ctx.Done())
+	fmt.Println("Pod Operator is running...")
+	// Skip watching Pending Pods.
+	return
 	// For Pods in Pending status.
 	go watcher.PendingPodsWatcher(
+		ctx,
 		os.Getenv("NAMESPACE"),
 		types.PendingWatchInterval,
 	)

@@ -10,6 +10,21 @@ import (
 	"time"
 )
 
+// IntMax returns the max value of int32, which is 2147483647.
+func IntMax() int {
+	i := 0
+	for j := 0; j < 31; j++ {
+		i = (i << 1) | 1
+	}
+
+	return i
+}
+
+// IntMin returns the min value of int32, which is -2147483648.
+func IntMin() int {
+	return -1 * (1 << 31)
+}
+
 // Struct2String accepts any interface{} and return to JSON based string.
 func Struct2String(v interface{}) string {
 	result, err := json.Marshal(v)
@@ -92,14 +107,6 @@ func Locate(skip int) (filename string, line int) {
 		line = -1
 	}
 	return file, line
-}
-
-// Swap is to swap the value for given position in an array.
-func Swap(data []int, i, j int) {
-	if len(data) < 2 || i < 0 || i > j || j >= len(data) {
-		return
-	}
-	data[i], data[j] = data[j], data[i]
 }
 
 // Retry will retry the given condition function with specific time interval and retry round.
